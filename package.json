@@ -15,7 +15,6 @@
   "bugs": {
     "url": "https://github.com/Janmuixi/mojo-plugin-vue/issues"
   },
-  "homepage": "https://janmuixi.dev",
   "scripts": {
     "build": "npx pkgroll",
     "test": "tap --disable-coverage --allow-empty-coverage test/*.js",
