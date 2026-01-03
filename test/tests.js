@@ -13,7 +13,7 @@ t.test('vuePlugin', async t => {
     app.renderer.viewPaths.push(Path.currentFile().sibling('templates').toString());
     
     app.get('/', async ctx => {
-        await ctx.render({ view: 'hello-world', engine: 'vue' }, { text: 'Hello World' })
+        await ctx.render({ view: 'hello-world' }, { text: 'Hello World' })
     });
     const ua = await app.newTestUserAgent({tap: t});
 

@@ -1,9 +1,21 @@
 {
   "name": "mojo-plugin-vue",
+  "author": "Jan Muixi",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Janmuixi/mojo-plugin-vue"
+  },
+  "bugs": {
+    "url": "https://github.com/Janmuixi/mojo-plugin-vue/issues"
+  },
+  "homepage": "https://janmuixi.dev",
   "scripts": {
     "build": "npx pkgroll",
     "test": "tap --disable-coverage --allow-empty-coverage test/*.js",
-    "build:test": "npm run build && npm run test"
+    "build:test": "npm run build && npm run test",
+    "publish:minor": "npm version minor && npm publish",
+    "publish:patch": "npm version patch && npm publish"
   },
   "files": [
     "dist/"
