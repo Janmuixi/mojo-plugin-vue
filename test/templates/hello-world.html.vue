@@ -1,1 +1,1 @@
-<div>{{ text }}</div>
+<template>{{ text }}</template>

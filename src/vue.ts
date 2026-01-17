@@ -1,7 +1,10 @@
 import type { MojoApp, MojoContext, MojoRenderOptions } from '@mojojs/core';
 import Path from '@mojojs/path';
+import { compile } from '@vue/compiler-dom';
+import * as VueRuntime from 'vue';
 import { createSSRApp } from 'vue';
 import { renderToString } from 'vue/server-renderer'
+import ButtonWithProp from './components/ButtonWithProp.vue';
 
 export default function (app: MojoApp, options: { name?: string } = {}) {
     const name = options.name ?? 'vue';
@@ -16,15 +19,21 @@ class VueEngine {
     }
 
     async render(ctx: MojoContext, options: MojoRenderOptions) {
-        const template = await new Path(options.viewPath).readFile('utf-8');
+        const rawTemplate = await new Path(options.viewPath).readFile('utf-8') as string;
+        const templateMatch = rawTemplate.match(/<template[^>]*>([\s\S]*?)<\/template>/i);
+        const template = templateMatch ? templateMatch[1].trim() : rawTemplate;
         
+        
+
+        const { code } = compile(template, { mode: 'function' });
+        const render = new Function('Vue', code)(VueRuntime);
         const vueApp = createSSRApp({
             data: () => (ctx.stash),
-            template
+            render
         })
+        vueApp.component('ButtonWithProp', ButtonWithProp)
 
         const result = await renderToString(vueApp);
-
         return Buffer.from(`
             <!DOCTYPE html>
             <html>

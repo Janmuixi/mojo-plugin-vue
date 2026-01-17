@@ -11,16 +11,25 @@ t.test('vuePlugin', async t => {
     t.ok('vue' in app.renderer.engines);
 
     app.renderer.viewPaths.push(Path.currentFile().sibling('templates').toString());
+    await app.renderer.warmup();
     
     app.get('/', async ctx => {
         await ctx.render({ view: 'hello-world' }, { text: 'Hello World' })
     });
-    const ua = await app.newTestUserAgent({tap: t});
+    app.get('/page-with-button', async ctx => {
+        await ctx.render({ view: 'page-with-button' }, { text: 'Hello World' })
+    });
 
     await t.test('Plain template', async () => {
-        (await ua.getOk('/')).statusIs(200).bodyLike(/Hello World/);
+        const ctx = app.newMockContext({ url: '/' });
+        const result = await ctx.renderToString({ view: 'hello-world' }, { text: 'Hello World' });
+        t.ok(result && /Hello World/.test(result));
     });
-    await ua.stop();
+    await t.test('Template with component', async () => {
+        const ctx = app.newMockContext({ url: '/page-with-button' });
+        const result = await ctx.renderToString({ view: 'page-with-button' }, { text: 'Hello World' });
+        t.ok(result && /<button>\s*Hello World\s*<\/button>/.test(result));
+    });
     
     t.end();
 })
